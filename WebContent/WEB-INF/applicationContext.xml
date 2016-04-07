@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- 定义数据源的信息 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass">
+			<value>com.mysql.jdbc.Driver</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>jdbc:mysql://localhost/project</value>
+		</property>
+		<property name="user">
+			<value>root</value>
+		</property>
+		<property name="password">
+			<value>676869</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>80</value>
+		</property>
+		<property name="minPoolSize">
+			<value>1</value>
+		</property>
+		<property name="initialPoolSize">
+			<value>1</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>20</value>
+		</property>
+	</bean>
+
+	<!--定义Hibernate的SessionFactory -->
+	<!-- SessionFactory使用的数据源为上面的数据源 -->
+	<!-- 指定了Hibernate的映射文件和配置信息 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+		<property name="mappingResources">
+			<list>
+				<value>ssh/beans/User.hbm.xml</value>
+				<value>ssh/beans/Dish.hbm.xml</value>
+				<value>ssh/beans/OneItem.hbm.xml</value>
+				<value>ssh/beans/ShopCar.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="show_sql">true</prop>
+				<prop key="hibernate.jdbc.batch_size">20</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	
+
+	<!--用户注册业务逻辑类 -->
+	
+	<bean id="baseDao" class="ssh.daoImpl.UserDao">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	
+	<bean id="userManager" class="ssh.serviceImpl.UserManagerImpl">
+		<property name="dao">
+			<ref bean="baseDao" />
+		</property>
+		<property name="showUserDao">
+			<ref bean="ShowUserDao" />
+		</property>
+	</bean>
+
+	<bean id="regAction" class="ssh.action.RegisterAction">
+		<property name="userManager">
+			<ref bean="userManager" />
+		</property>
+	</bean>
+	
+	<!--用户登陆业务逻辑类 -->
+	<bean id="ShowUserDao" class="ssh.daoImpl.ShowUserDaoImpl">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	
+	<bean id="logAction" class="ssh.action.LoginAction">
+		<property name="userManager">
+			<ref bean="userManager" />
+		</property>
+	</bean>
+	
+	<!--购物注册业务逻辑类 -->
+	<bean id="oneItemManager" class="ssh.serviceImpl.OneItemManagerImpl">
+		<property name="dao">
+			<ref bean="baseDao" />
+		</property>
+	</bean>
+
+	<bean id="PutOneItemToCar" class="ssh.action.PutOneItemToCar">
+		<property name="oneItemManager">
+			<ref bean="oneItemManager" />
+		</property>
+	</bean>
+	
+
+	<!-- 显示菜单ShowDishAction -->
+
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<constructor-arg>
+			<ref local="sessionFactory" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="showDishDao" class="ssh.daoImpl.ShowDishDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemplate" />
+	</bean>
+
+	<bean id="showDishService" class="ssh.serviceImpl.ShowDishServiceImpl">
+		<property name="showDishDao" ref="showDishDao" />
+	</bean>
+
+	<bean id="ShowDishAction" class="ssh.action.ShowDishAction">
+		<property name="showDishService" ref="showDishService"></property>
+	</bean>
+
+	<!-- 显示菜单ShowShopCarAction -->
+
+	<bean id="showShopCarDao" class="ssh.daoImpl.ShowShopCarDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemplate" />
+	</bean>
+
+	<bean id="showShopCarService" class="ssh.serviceImpl.ShowShopCarServiceImpl">
+		<property name="showShopCarDao" ref="showShopCarDao" />
+	</bean>
+	
+	<bean id="ShowShopCarAction" class="ssh.action.ShowShopCarAction">
+		<property name="showShopCarService" ref="showShopCarService"></property>
+		<property name="showDishService" ref="showDishService"></property>
+	</bean>
+
+</beans>

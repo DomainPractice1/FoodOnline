@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+                            "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                            "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="ssh.beans">
+	<class name="Dish" table="dish">
+		<id name="meishiId" column="meishiId">
+			<generator class="native"></generator>
+		</id>
+		<property name="name" column="name" type="java.lang.String"
+			length="45"></property>
+		<property name="price" column="price" type="java.lang.Integer"
+			length="11"></property>
+		<property name="description" column="description" type="java.lang.String"
+			length="200"></property>
+	</class>
+</hibernate-mapping>

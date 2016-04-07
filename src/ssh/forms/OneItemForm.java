@@ -1,0 +1,13 @@
+package ssh.forms;
+
+public class OneItemForm {
+	private String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+}
