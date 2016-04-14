@@ -6,7 +6,7 @@
 
 <head>
 
-<meta charset="GB2312">
+<meta charset="UTF-8">
 
 <meta name="keywords" content="" />
 

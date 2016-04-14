@@ -11,13 +11,13 @@
 			<value>com.mysql.jdbc.Driver</value>
 		</property>
 		<property name="jdbcUrl">
-			<value>jdbc:mysql://localhost/project</value>
+			<value>jdbc:mysql://10.125.103.139/projectssh</value>
 		</property>
 		<property name="user">
-			<value>root</value>
+			<value>qwe</value>
 		</property>
 		<property name="password">
-			<value>676869</value>
+			<value>123</value>
 		</property>
 		<property name="maxPoolSize">
 			<value>80</value>
